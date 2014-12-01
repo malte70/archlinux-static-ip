@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# Static IP configuration (made for ArchLinux, but should work on any GNU/Linux system)
+#
+# Copyright (c) 2014 Malte Bublitz
+#
+
+case "$1" in
+	start)
+		ip link set dev "$1" up
+		ip addr add ${address}/${netmask} broadcast ${boradcast} dev "$1"
+		
+		[[ -z ${gateway} ]] || {
+			ip route add default via ${gateway}
+		}
+		;;
+
+	stop)
+		ip addr flush dev "$1"
+		ip route flush dev "$1"
+		ip link set dev "$1" down
+		;;
+	*)
+		echo "Usage: archlinux-static-ip [start|stop] [interface]" >&2
+		exit 1
+		;;
+esac
+
